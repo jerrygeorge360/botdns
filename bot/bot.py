@@ -2,9 +2,8 @@
 import re
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from config import BOT_TOKEN
-print(BOT_TOKEN)
-from backend_client import (
+from bot.config import BOT_TOKEN
+from bot.backend_client import (
     fetch_domain_analysis,
     fetch_account_info,
     resolve_domain_to_address,
@@ -15,13 +14,13 @@ from backend_client import (
 bot = telebot.TeleBot(BOT_TOKEN)
 user_domains = {}
 
-# 🎛 UI Buttons
+# UI Buttons
 def home_buttons():
     markup = InlineKeyboardMarkup(row_width=2)
     markup.add(
         InlineKeyboardButton("🔍 Analyze Domain", callback_data="menu:analyze"),
         InlineKeyboardButton("🎯 Check Availability", callback_data="menu:check"),
-        InlineKeyboardButton("🧠 Profile Suggestion", callback_data="menu:profile"),
+        InlineKeyboardButton("🤔 Profile Suggestion", callback_data="menu:profile"),
         InlineKeyboardButton("🔎 Account Details", callback_data="menu:account")
     )
     return markup
@@ -110,7 +109,7 @@ def handle_domain_actions(call: CallbackQuery):
     }
     bot.send_message(call.message.chat.id, formatters[action](data), parse_mode="Markdown")
 
-# 🔁 Recent TX
+# Recent TX
 @bot.callback_query_handler(func=lambda call: call.data.startswith("txs:"))
 def handle_recent_transactions(call: CallbackQuery):
     domain = call.data.split(":", 1)[1]
@@ -126,7 +125,7 @@ def handle_recent_transactions(call: CallbackQuery):
     for tx in txs[:5]:
         bot.send_message(call.message.chat.id, format_transaction(tx), parse_mode="Markdown")
 
-# 🔔 Subscribe
+# Subscribe
 @bot.callback_query_handler(func=lambda call: call.data.startswith("sub:"))
 def handle_subscribe(call: CallbackQuery):
     domain = call.data.split(":", 1)[1]
@@ -137,7 +136,7 @@ def handle_subscribe(call: CallbackQuery):
     result = subscribe_user(call.message.chat.id, address)
     bot.send_message(call.message.chat.id, f"✅ Subscribed to `{domain}`" if result else "❌ Subscription failed.")
 
-# 📄 Formatters
+# Formatters
 def format_full_analysis(data: dict) -> str:
     return (
         f"📊 *Domain:* `{data['domain']}`\n"

@@ -120,7 +120,6 @@ Description: {item.get("collection", {}).get("description")}
 """
 
 
-import json
 
 
 def extract_nft_info(json_data):

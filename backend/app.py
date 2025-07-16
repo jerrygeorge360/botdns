@@ -1,6 +1,6 @@
 # app.py
 from flask import Flask
-from routes import bp as dns_routes
+from backend.routes import bp as dns_routes
 
 app = Flask(__name__)
 app.register_blueprint(dns_routes, url_prefix="/api")

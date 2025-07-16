@@ -1,9 +1,9 @@
 import requests
 import os
-from utils.logger import logger
+from backend.utils.logger import logger
 
 BASE_URL = os.getenv("TON_API_BASE", "https://tonapi.io")
-TOKEN = os.getenv("TON_API_TOKEN","AEFG7EIPPRSRCIIAAAAOBO7ZYVU3HS6B7B2C7QSGTUTQW5YRC3FBIF64USP6ADY5UDAWDWI")
+TOKEN = os.getenv("TON_API_TOKEN")
 
 
 def tonapi_get(endpoint: str, params=None):

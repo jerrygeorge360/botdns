@@ -11,7 +11,7 @@ A powerful Telegram bot that provides analysis, scoring, and insights for `.ton`
 * 🧠 **Profile Suggestion** *(Coming Soon)* – Get profile suggestions for domains.
 * 🔎 **TON Address Info** – Fetch and display TON account details by address.
 * 📜 **Recent Transactions** – View the last few transactions of any resolved domain.
-* 🔔 **Subscription** – Subscribe to domain updates (WIP).
+* 🔔 **Subscription** – Subscribe to domain updates.
 
 ---
 
@@ -19,10 +19,11 @@ A powerful Telegram bot that provides analysis, scoring, and insights for `.ton`
 
 * **Python** + **Flask** – API backend
 * **Telebot (pyTelegramBotAPI)** – Telegram bot integration
-* **OpenAI or LLM** – AI summary generation
+* **Grok or LLM** – AI summary generation
 * **TON API** – TON blockchain data
 * **dotenv** – Configuration handling
 * **JSON-based storage** – For lightweight subscriptions
+* **Emoji Plugins** – "Yet another emoji support"
 
 ---
 
@@ -55,7 +56,7 @@ A powerful Telegram bot that provides analysis, scoring, and insights for `.ton`
 📁 dnsbot/
 ├── bot             # Main Telegram bot logic
 ├── backend           # backend logic and routes
-├── services            # different services(LLM service,)
+├─services            # different services(LLM service,)
 ├── utils/              # helpers and logger
 │
 ├── README.md
