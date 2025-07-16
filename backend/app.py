@@ -10,4 +10,4 @@ def root():
     return "✅ DNS Insight Backend running."
 
 if __name__ == "__main__":
-    app.run(port=5001,debug=True)
+    app.run(host="0.0.0.0", port=8080)
