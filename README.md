@@ -1,33 +1,100 @@
 # 🧠 DNS Insight Bot for TON
 
-A powerful Telegram bot that provides analysis, scoring, and insights for `.ton` domains and TON blockchain addresses.
+A powerful Telegram bot and API that provides analysis, scoring, and insights for `.ton` domains and TON blockchain addresses.
 
-
+---
 
 ## 📌 Features
 
-* 🔍 **Domain Analysis** – Analyze `.ton` domains and get a score with AI-generated reasons and summaries.
-* 🎯 **Domain Availability** *(Coming Soon)* – Check if a domain is available for registration.
-* 🧠 **Profile Suggestion** *(Coming Soon)* – Get profile suggestions for domains.
-* 🔎 **TON Address Info** – Fetch and display TON account details by address.
-* 📜 **Recent Transactions** – View the last few transactions of any resolved domain.
-* 🔔 **Subscription** – Subscribe to domain updates.
+- 🔍 **Domain Analysis** – Analyze `.ton` domains and get a score with AI-generated reasons and summaries.
+- 🔎 **TON Address Info** – Fetch and display TON account details by address.
+- 📜 **Recent Transactions** – View recent transactions of any resolved domain.
+- 🔔 **Subscription** – Subscribe to domain updates *(stored locally for now)*.
+- 🎯 **Domain Availability** *(Coming Soon)*
+- 🧠 **Profile Suggestion** *(Coming Soon)*
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Python** + **Flask** – API backend
-* **Telebot (pyTelegramBotAPI)** – Telegram bot integration
-* **Grok or LLM** – AI summary generation
-* **TON API** – TON blockchain data
-* **dotenv** – Configuration handling
-* **JSON-based storage** – For lightweight subscriptions
-* **Emoji Plugins** – "Yet another emoji support"
+- **Python** + **Flask** – API backend
+- **Telebot (pyTelegramBotAPI)** – Telegram bot integration
+- **Grok or LLM API** – AI-powered domain scoring and summaries
+- **TON API** – Fetch blockchain/account data
+- **dotenv** – Configuration management
+- **Supervisor** – Runs both Flask + bot inside Docker container
+- **Docker** – Containerized deployment
 
 ---
 
-## 🚀 How It Works
+## 📦 Project Structure
+
+```
+
+📁 dnsbot/
+├── backend/           # Flask API (app.py, routes/)
+├── bot/               # Telegram bot logic (bot.py)
+├── services/          # External API services (TON, AI/Grok)
+├── utils/             # Logger, helpers
+├── requirements.txt   # Python dependencies
+├── Dockerfile         # Docker container config
+├── supervisord.conf   # Runs both services
+├── .env               # Secrets & tokens
+└── README.md
+
+````
+
+---
+
+## 🔐 Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+INSIGHT_API_BASE=http://localhost:8080  # Will change when deployed
+TON_API_TOKEN=<your-tonapi-token>
+TON_API_BASE=https://tonapi.io
+GROQ_KEY=<your-grok-token>
+TG_API_TOKEN=<your-telegram-bot-token>
+````
+
+> ✅ `INSIGHT_API_BASE` should point to your backend API.
+>
+> Use `http://localhost:8080` locally, or update it to your deployed URL like `https://yourapp.fly.dev` when live.
+
+---
+
+## 🐳 Dockerized Setup (Flask + Bot Together)
+
+### 1. Build the image
+
+```bash
+sudo docker build -t dnsbot .
+```
+
+### 2. Run the container
+
+```bash
+sudo docker run -p 8080:8080 --env-file .env dnsbot
+```
+
+This will:
+
+* Start the Flask backend at `http://localhost:8080`
+* Start the Telegram bot in the background (uses long polling)
+
+### 3. Logs
+
+To view logs:
+
+```bash
+sudo docker ps           # get container ID
+sudo docker logs -f <container_id>
+```
+
+---
+
+## 🔁 How It Works
 
 ### 1. User starts the bot:
 
@@ -35,90 +102,24 @@ A powerful Telegram bot that provides analysis, scoring, and insights for `.ton`
 /start
 ```
 
-### 2. The bot presents an inline menu:
+### 2. The bot shows a menu:
 
-* Analyze a domain (`example.ton`)
-* View score, AI summary, or recent transactions
-* Get wallet/account details
+* Analyze domain (e.g. `example.ton`)
+* View AI score, reasons, and summaries
+* Check wallet/account details
 
-### 3. Bot interacts with Flask backend APIs like:
+### 3. Bot uses the backend API:
 
-* `/analyze/<domain>` → for scoring + AI summary
-* `/resolve/<domain>` → resolve `.ton` domain to address
-* `/accounts/<address>` → fetch account info
-* `/ai/analyze/<domain>` → call GROK to analyze domain detail
-
----
-
-## 📦 Project Structure
-
-```
-📁 dnsbot/
-├── bot             # Main Telegram bot logic
-├── backend           # backend logic and routes
-├─services            # different services(LLM service,)
-├── utils/              # helpers and logger
-│
-├── README.md
-├── .env                # Secrets & API keys
-```
+* `/api/analyze/<domain>` → AI scoring
+* `/api/resolve/<domain>` → resolve domain to address
+* `/api/accounts/<address>` → account info from TON
+* `/api/ai/analyze/<domain>` → LLM analysis (Grok)
 
 ---
 
-## 🔐 Environment Variables
+## 🧪 Sample Output
 
-Create a `.env` file with:
-
-```env
-INSIGHT_API_BASE=http://localhost:5000 or wherever you are hosting it
-TON_API_TOKEN=<your-tonapi-token>
-TON_API_BASE=https://tonapi.io
-GROQ_KEY=<your-grok-token>
-TG_API_TOKEN=<your-bot-token>
-```
-
----
-
-## ⚙️ Run the Bot and Backend
-
-### 1. Start Flask API (Backend):
-
-```bash
-python app.py
-```
-
-### 2. Run the Telegram Bot:
-
-```bash
-python bot.py
-```
-
-Make sure both are running concurrently.
-
----
-
-## 📋 Sample Bot Commands
-
-```bash
-/start
-/menu
-```
-
-Then enter:
-
-```
-alpha.ton
-```
-
-Or directly send:
-
-```
-EQBlahBlah... (TON address)
-```
-
----
-
-## 🧪 Sample `/analyze/<domain>` Output
+### `/api/analyze/alpha.ton`:
 
 ```json
 {
@@ -137,9 +138,12 @@ EQBlahBlah... (TON address)
 
 ## 🧑‍💻 Author
 
-Built by Jerry George (@jerrygeorge360) for TON ecosystem analysis and developer tools.
+Built by [Jerry George](https://t.me/jerrygeorge360) for the TON ecosystem and the future of decentralized identity.
 
 ---
 
-## 📄 License.
-MIT
+## 📄 License
+
+MIT License.
+
+```
